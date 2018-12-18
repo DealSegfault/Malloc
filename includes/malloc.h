@@ -18,10 +18,14 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#define DEFAULT_MMAP_THRESHOLD_MIN (128 * 1024)
+
 typedef struct			s_header
 {
 	size_t	size;
 	void *content;
-}
+}						t_header;
+
+// void					*ft_malloc(size_t n);
 
 #endif
