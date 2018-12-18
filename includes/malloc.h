@@ -21,6 +21,10 @@
 #define DEFAULT_MMAP_THRESHOLD_MIN (128 * 1024)
 #define DEFAULT_MMAP_THRESHOLD_MAX_X32 (512 * 1024)
 #define DEFAULT_MMAP_THRESHOLD_MAX (4 * 1024 * 1024 * sizeof(long))
+#define TINY 0
+#define MEDIUM 1
+#define LARGE 2
+#define ERROR_SIZE -1
 typedef struct			s_header
 {
 	size_t	size;
