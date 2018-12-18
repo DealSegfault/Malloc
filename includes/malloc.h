@@ -19,7 +19,8 @@
 #include <unistd.h>
 
 #define DEFAULT_MMAP_THRESHOLD_MIN (128 * 1024)
-
+#define DEFAULT_MMAP_THRESHOLD_MAX_X32 (512 * 1024)
+#define DEFAULT_MMAP_THRESHOLD_MAX (4 * 1024 * 1024 * sizeof(long))
 typedef struct			s_header
 {
 	size_t	size;
