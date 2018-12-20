@@ -54,48 +54,50 @@
 
 // }						t_free_chunk;					
 
-typedef struct			t_indexes
+typedef struct			s_indexes
 {
 	void	*ptr;
 	size_t	type;
 	size_t	mmap_index;
 	size_t	index_in_zone;
-}						s_indexes;
+}						t_indexes;
 
-typedef struct			t_tiny
+typedef struct			s_pagezone
 {
-	void	*tiny_mmap;
-	size_t	used;
-	size_t	available;
-	size_t	total_indexes;
-}						s_tiny;
+	void	*map;
+	int	used;
+	int	available;
+	int	total_indexes;
+	int	type;
+}						t_pagezone;
 
-typedef struct			t_medium
-{
-	void	*medium_mmap;
-	size_t	used;
-	size_t	available;
-	size_t	total_indexes;
-}						s_medium;
+// typedef struct			s_medium
+// {
+// 	void	*map;
+// 	size_t	used;
+// 	size_t	available;
+// 	size_t	total_indexes;
+// }						t_medium;
 
-typedef struct			t_large
-{
-	void	*large_mmap;
-	size_t	used;
-	size_t	available;
-	size_t	total_indexes;
-}						s_large;
+// typedef struct			s_large
+// {
+// 	void	*map;
+// 	size_t	used;
+// 	size_t	available;
+// 	size_t	total_indexes;
+// }						t_large;
 
 typedef	struct			s_index_storage
 {
-	t_tiny		*tiny;
-	t_medium	*medium;
-	t_large		*large;
+	t_pagezone	*tiny;
+	t_pagezone	*medium;
+	t_pagezone	*large;
 	size_t		nb_tiny;
 	size_t		nb_medium;
 	size_t		nb_large;
 	void		*indexes;
-}						s_index_storage;
+	int			is_init;
+}						t_index_storage;
 
 // void					*ft_malloc(size_t n);
 
