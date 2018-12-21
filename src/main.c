@@ -12,9 +12,6 @@
 
 #include "../includes/malloc.h"
 
-int first_use = 0;
-int mem_space_available = 0;
-int mem_space_allocated = 0;
 t_index_storage store;
 
 size_t	padding_to_16(size_t n)
@@ -96,6 +93,8 @@ void	create_map(size_t type)
 	store_type[tail].used = 0;
 	store_type[tail].available = size_zone;
 	store_type[tail].total_indexes = 0;
+	store_type[tail].edge = 0;
+
 	return ;
 }
 
@@ -111,6 +110,7 @@ void malloc_storage_init(void)
 	store.medium = mmap_proxy(MEDIUM_ZONE);
 	store.large = mmap_proxy(LARGE_ZONE);
 	store.indexes = mmap_proxy(TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE);
+	store.total_indexes = 0;
 	store.nb_tiny = 0;
 	store.nb_medium = 0;
 	store.nb_large = 0;
@@ -135,12 +135,52 @@ int		find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, i
 	return (0);
 }
 
-size_t	find_store_space(size_t n)
+// size_t		size_switch(size_t type)
+// {
+// 	if (type == TINY)
+// 		return TINY_SIZE;
+// 	// if (type == MEDIUM)
+// 	// 	return MEDIUM_SIZE;
+// 	// if (type == LARGE)
+// 	// 	return type;
+// 	return (0);
+// }
+
+
+void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
+{
+	t_indexes	local_store;
+
+	local_store.type = type;
+	local_store.mmap_index = mmap_index;
+	local_store.index_in_chunk = edge;
+	local_store.ptr = ptr;
+	store.total_indexes += 1;
+	store.indexes[store.total_indexes] = local_store;
+	//check free memory and swap freed memory
+}
+
+void	 *create_ptr(t_pagezone current_chunk, size_t n, size_t type, size_t mmap_index)
+{
+	void	*ptr;
+	
+	ptr = &current_chunk.map + current_chunk.edge * 16; //bucket 16 bytes sized
+	current_chunk.edge += BUCKET(n) + 1;
+	current_chunk.used = current_chunk.used + n;
+	current_chunk.total_indexes += 1;
+	current_chunk.available -= n;
+	create_ptr_index(ptr, type, mmap_index, current_chunk.edge - BUCKET(n) + 1);
+
+	return (ptr);
+}
+
+void	*find_store_space(size_t n)
 {
 	size_t	type;
 	size_t	available_chunk;
 	size_t	nb_chunk;
 	int		chunk_index;
+	void	*ptr;
 	t_pagezone *page_type;
 
 	chunk_index = 0;
@@ -152,49 +192,53 @@ size_t	find_store_space(size_t n)
 	}
 	if (find_available_chunk(page_type, n, nb_chunk, &chunk_index))
 	{
-		// if (find_chunk_space(page_type, n, chunk_index)
+		ptr = create_ptr(page_type[chunk_index], n, type, chunk_index);
+		return (ptr);
 	}
 	else // create new pagezone for type
 	{
 		create_map(type);
-		find_store_space(n);
+		return (find_store_space(n))
 	}
 
-	return (0);
+	return (NULL);
 }
 
 void	*ft_malloc(size_t n)
 {
+	size_t	size;
+
 	if (n < 1)
 		return (NULL);
+	size = padding_to_16(n);
 	malloc_storage_init();
-	find_store_space(n);
-	return (NULL);
+	return (find_store_space(size));
 }
 
 int main(int argc, char **argv)
 {
-	char *str1;
-	char *str2;
-	char *str3;
-	char *str4;
-	char *str5;
-	char *str6;
-	char *str7;
-
+	char *str;
+	// char *str2;
+	// char *str3;
+	// char *str4;
+	// char *str5;
+	// char *str6;
+	// char *str7;
+	int nb = 100;
+	int i = 0;
 	// str1 = ft_malloc(-1);
 	// str2 = ft_malloc(0);
 	// str3 = ft_malloc(1);	
 	// str4 = ft_malloc(10);
-	str5 = ft_malloc(100);
+	str = ft_malloc(nb + 1);
 	// str6 = ft_malloc(1000);
 	// str7 = ft_malloc(1000);
 
 	// nb = atoi(argv[1]);
 	// str = ft_malloc(nb + 1);
-	// while (++i < nb)
-	// 	str[i] = 'X';
-	// str[i] = '\0';
+	while (++i < nb)
+		str[i] = 'X';
+	str[i] = '\0';
 
 	return 0;
 }

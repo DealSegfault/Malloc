@@ -18,6 +18,7 @@
 # include <stdio.h>
 # include <unistd.h>
 
+# define BUCKET(X) X / 16
 # define DEFAULT_MMAP_THRESHOLD_MIN (128 * 1024)
 # define DEFAULT_MMAP_THRESHOLD_MAX_X32 (512 * 1024)
 # define DEFAULT_MMAP_THRESHOLD_MAX (4 * 1024 * 1024 * sizeof(long))
@@ -59,16 +60,17 @@ typedef struct			s_indexes
 	void	*ptr;
 	size_t	type;
 	size_t	mmap_index;
-	size_t	index_in_zone;
+	size_t	index_in_chunk;
 }						t_indexes;
 
 typedef struct			s_pagezone
 {
 	void	*map;
-	int	used;
-	int	available;
-	int	total_indexes;
-	int	type;
+	int		used;
+	int		available;
+	int		total_indexes;
+	int		type;
+	size_t	edge;
 }						t_pagezone;
 
 // typedef struct			s_medium
@@ -95,7 +97,8 @@ typedef	struct			s_index_storage
 	size_t		nb_tiny;
 	size_t		nb_medium;
 	size_t		nb_large;
-	void		*indexes;
+	size_t		total_indexes;
+	t_indexes	*indexes;
 	int			is_init;
 }						t_index_storage;
 
