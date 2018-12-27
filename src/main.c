@@ -56,7 +56,7 @@ void	*mmap_proxy(size_t size)
 
 	ptr = mmap(0, size,
 	PROT_READ | PROT_WRITE,
-	MAP_ANON | MAP_PRIVATE, -1, 0);
+		MAP_ANON | MAP_PRIVATE, -1, 0);
 	return (ptr);
 }
 
@@ -72,14 +72,14 @@ void	create_map(size_t type)
 	{
 		store_type = store.tiny;
 		tail = store.nb_tiny;
-		size_zone = TINY_SIZE;
+		size_zone = TINY_SIZE * 100;
 		store.nb_tiny = store.nb_tiny + 1;
 	}
 	if (type == MEDIUM)
 	{
 		store_type = store.medium;
 		tail = store.nb_medium;
-		size_zone = MEDIUM_SIZE;
+		size_zone = MEDIUM_SIZE * 100;
 		store.nb_medium = store.nb_medium + 1;
 	}
 	if (type >= LARGE)
@@ -111,7 +111,7 @@ void malloc_storage_init(void)
 	store.tiny = mmap_proxy(TINY_ZONE);
 	store.medium = mmap_proxy(MEDIUM_ZONE);
 	store.large = mmap_proxy(LARGE_ZONE);
-	store.indexes = mmap_proxy(TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE);
+	store.indexes = mmap_proxy(1000000);
 	store.total_indexes = 0;
 	store.nb_tiny = 0;
 	store.nb_medium = 0;
@@ -165,16 +165,16 @@ void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
 	//check free memory and swap freed memory
 }
 
-void	 *create_ptr(t_pagezone current_chunk, size_t n, size_t type, size_t mmap_index)
+void	 *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index)
 {
 	void	*ptr;
 	
-	ptr = &current_chunk.map + current_chunk.edge * 16; //bucket 16 bytes sized
-	current_chunk.edge += BUCKET(n) + 1;
-	current_chunk.used = current_chunk.used + n;
-	current_chunk.total_indexes += 1;
-	current_chunk.available -= n;
-	create_ptr_index(ptr, type, mmap_index, current_chunk.edge - BUCKET(n) + 1);
+	ptr = current_chunk->map + current_chunk->edge; //bucket 16 bytes sized
+	current_chunk->edge += n;
+	current_chunk->used = current_chunk->used + n;
+	current_chunk->total_indexes += 1;
+	current_chunk->available -= n;
+	create_ptr_index(ptr, type, mmap_index, current_chunk->edge - n);
 
 	return (ptr);
 }
@@ -195,9 +195,14 @@ void	*find_store_space(size_t n)
 		page_type = store.tiny;
 		nb_chunk = store.nb_tiny;
 	}
+	if (type == MEDIUM)
+	{
+		page_type = store.medium;
+		nb_chunk = store.nb_medium;
+	}
 	if (find_available_chunk(page_type, n, nb_chunk, &chunk_index))
 	{
-		ptr = create_ptr(page_type[chunk_index], n, type, chunk_index);
+		ptr = create_ptr(page_type + chunk_index, n, type, chunk_index);
 		return (ptr);
 	}
 	else // create new pagezone for type
@@ -225,15 +230,17 @@ char *routine(int n)
 	char *str;
 	int i = 0;
 
-	if (!(str = ft_malloc(n)))
+	if (!(str = ft_malloc(n + 1)))
 		return (NULL);
 	while (i < n)
 	{
 		str[i] = 'X';
+		// write(1, str, i);
+		// write(1, "\n",1);
 		i++;
 	}
 	str[i] = '\0';
-	printf("Size: %d, address %p\n", n, (void *) &str);
+	printf("Size: %d, address %p\n", n, (void *)str);
 	// printf("Content : %s\n\n", str);
 	return str;
 }
@@ -241,15 +248,17 @@ int main(int argc, char **argv)
 {
 	char *str;
 	char *str1;
-	int i = 10000;
+	int i = 0;
 
-	while (i > 0)
+	while (i < 100000)
 	{
-		routine(15);
-		i--;
+		printf("%d ", i);
+		str = routine(15);
+		if ((unsigned long long)str % 16 > 0)
+			exit(1);
+		
+		i++;
 	}
-
-
 
 
 	// char *str;
