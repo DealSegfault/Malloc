@@ -111,7 +111,7 @@ void malloc_storage_init(void)
 	store.tiny = mmap_proxy(TINY_ZONE);
 	store.medium = mmap_proxy(MEDIUM_ZONE);
 	store.large = mmap_proxy(LARGE_ZONE);
-	store.indexes = mmap_proxy(1000000);
+	store.indexes = mmap_proxy(sizeof(t_indexes) * (TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE));
 	store.total_indexes = 0;
 	store.nb_tiny = 0;
 	store.nb_medium = 0;
@@ -161,6 +161,7 @@ void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
 	local_store.index_in_chunk = edge;
 	local_store.ptr = ptr;
 	store.total_indexes += 1;
+
 	store.indexes[store.total_indexes] = local_store;
 	//check free memory and swap freed memory
 }
@@ -253,7 +254,7 @@ int main(int argc, char **argv)
 	while (i < 100000)
 	{
 		printf("%d ", i);
-		str = routine(15);
+		str = routine(1500);
 		if ((unsigned long long)str % 16 > 0)
 			exit(1);
 		
