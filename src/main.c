@@ -34,11 +34,13 @@ size_t	malloc_type(size_t size)
 	int page_size;
 	size_t padded_size;
 
+	if (size <= 0)
+		return (0);
 	padded_size = padding_to_16(size);
 	nbr_block = 0;
 	page_size = getpagesize();
 	if (padded_size < 1)
-		return (ERROR_SIZE);
+		return (0);
 	if (padded_size <= TINY_SIZE)
 		return (TINY);
 	if (padded_size > TINY_SIZE &&  padded_size < MEDIUM_SIZE)
@@ -114,6 +116,9 @@ void malloc_storage_init(void)
 	store.nb_tiny = 0;
 	store.nb_medium = 0;
 	store.nb_large = 0;
+	create_map(TINY);
+	create_map(MEDIUM);
+
 
 }
 // void	find_chunk_space(size_t n, void )
@@ -198,7 +203,7 @@ void	*find_store_space(size_t n)
 	else // create new pagezone for type
 	{
 		create_map(type);
-		return (find_store_space(n))
+		return (find_store_space(n));
 	}
 
 	return (NULL);
@@ -215,30 +220,48 @@ void	*ft_malloc(size_t n)
 	return (find_store_space(size));
 }
 
+char *routine(int n)
+{
+	char *str;
+	int i = 0;
+
+	if (!(str = ft_malloc(n)))
+		return (NULL);
+	while (i < n)
+	{
+		str[i] = 'X';
+		i++;
+	}
+	str[i] = '\0';
+	printf("Size: %d, address %p\n", n, (void *) &str);
+	// printf("Content : %s\n\n", str);
+	return str;
+}
 int main(int argc, char **argv)
 {
 	char *str;
-	// char *str2;
-	// char *str3;
-	// char *str4;
-	// char *str5;
-	// char *str6;
-	// char *str7;
-	int nb = 100;
-	int i = 0;
-	// str1 = ft_malloc(-1);
-	// str2 = ft_malloc(0);
-	// str3 = ft_malloc(1);	
-	// str4 = ft_malloc(10);
-	str = ft_malloc(nb + 1);
-	// str6 = ft_malloc(1000);
-	// str7 = ft_malloc(1000);
+	char *str1;
+	int i = 10000;
 
-	// nb = atoi(argv[1]);
-	// str = ft_malloc(nb + 1);
-	while (++i < nb)
-		str[i] = 'X';
-	str[i] = '\0';
+	while (i > 0)
+	{
+		routine(15);
+		i--;
+	}
 
+
+
+
+	// char *str;
+	// int i = 0;
+	
+	// str = ft_malloc(1);
+	// while (i < 10)
+	// {
+	// 	str[i] = 'A';
+	// 	i++;
+	// }
+	// str[i] = '\0';
+	// printf("%s\n", str);
 	return 0;
 }
