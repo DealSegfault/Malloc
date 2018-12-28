@@ -111,7 +111,7 @@ void malloc_storage_init(void)
 	store.tiny = mmap_proxy(TINY_ZONE);
 	store.medium = mmap_proxy(MEDIUM_ZONE);
 	store.large = mmap_proxy(LARGE_ZONE);
-	store.indexes = mmap_proxy(1000000);
+	store.indexes = mmap_proxy((TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE) * 100);
 	store.total_indexes = 0;
 	store.nb_tiny = 0;
 	store.nb_medium = 0;
@@ -139,17 +139,6 @@ int		find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, i
 	}	
 	return (0);
 }
-
-// size_t		size_switch(size_t type)
-// {
-// 	if (type == TINY)
-// 		return TINY_SIZE;
-// 	// if (type == MEDIUM)
-// 	// 	return MEDIUM_SIZE;
-// 	// if (type == LARGE)
-// 	// 	return type;
-// 	return (0);
-// }
 
 
 void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
@@ -179,6 +168,18 @@ void	 *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_
 	return (ptr);
 }
 
+void	*create_large_ptr(t_pagezone *current_chunk, size_t store_index, size_t n)
+{
+	void	*ptr;
+	
+	ptr = current_chunk->map;
+	current_chunk->used = n;
+	current_chunk->total_indexes += 1;
+	current_chunk->available = 0;
+	create_ptr_index(ptr, LARGE, store_index, 0);
+
+	return (ptr);
+}
 void	*find_store_space(size_t n)
 {
 	size_t	type;
@@ -190,6 +191,7 @@ void	*find_store_space(size_t n)
 
 	chunk_index = 0;
 	type = malloc_type(n);
+	// printf("Type %d, Size %d\n", (int)type, (int)n);
 	if (type == TINY)
 	{
 		page_type = store.tiny;
@@ -199,6 +201,12 @@ void	*find_store_space(size_t n)
 	{
 		page_type = store.medium;
 		nb_chunk = store.nb_medium;
+	}
+	if (type == LARGE)
+	{
+		create_map(n);
+		ptr = create_large_ptr(store.large + store.nb_large, store.nb_large, n);
+		return (ptr);
 	}
 	if (find_available_chunk(page_type, n, nb_chunk, &chunk_index))
 	{
@@ -235,42 +243,27 @@ char *routine(int n)
 	while (i < n)
 	{
 		str[i] = 'X';
-		// write(1, str, i);
-		// write(1, "\n",1);
 		i++;
 	}
 	str[i] = '\0';
-	printf("Size: %d, address %p\n", n, (void *)str);
+	// printf("Size: %d, address %p, type \n", n, (void *)str);
 	// printf("Content : %s\n\n", str);
 	return str;
 }
+
 int main(int argc, char **argv)
 {
 	char *str;
 	char *str1;
 	int i = 0;
 
-	while (i < 100000)
+	while (i < 50)
 	{
 		printf("%d ", i);
-		str = routine(15);
+		str = routine(i * 100);
 		if ((unsigned long long)str % 16 > 0)
 			exit(1);
-		
 		i++;
 	}
-
-
-	// char *str;
-	// int i = 0;
-	
-	// str = ft_malloc(1);
-	// while (i < 10)
-	// {
-	// 	str[i] = 'A';
-	// 	i++;
-	// }
-	// str[i] = '\0';
-	// printf("%s\n", str);
 	return 0;
 }
