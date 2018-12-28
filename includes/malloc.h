@@ -28,7 +28,7 @@
 # define ERROR_SIZE 0
 
 # define TINY_SIZE 512
-# define MEDIUM_SIZE 1024
+# define MEDIUM_SIZE 2048
 
 # define TINY_ZONE 1024 * 32
 # define MEDIUM_ZONE 1024 * 16
