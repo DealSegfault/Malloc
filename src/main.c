@@ -257,13 +257,30 @@ int main(int argc, char **argv)
 	char *str1;
 	int i = 0;
 
-	while (i < 50)
+	while (i < 10000)
 	{
-		printf("%d ", i);
-		str = routine(i * 100);
-		if ((unsigned long long)str % 16 > 0)
-			exit(1);
+		str = routine(25);
 		i++;
 	}
+	i = 0;
+	while (i < 1000)
+	{
+		str = routine(800);
+		i++;
+	}
+	i = 0;
+	while (i < 10)
+	{
+		str = routine(2050);
+		i++;
+	}
+	// routine(120);
+	// routine(1200);
+	// routine(2000);
+	// routine(3000);
+	// routine(4000);
+
+
+	show_alloc_mem();
 	return 0;
 }
