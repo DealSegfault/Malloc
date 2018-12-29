@@ -141,7 +141,7 @@ int		find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, i
 }
 
 
-void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
+void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge, size_t size)
 {
 	t_indexes	local_store;
 
@@ -149,6 +149,7 @@ void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
 	local_store.mmap_index = mmap_index;
 	local_store.index_in_chunk = edge;
 	local_store.ptr = ptr;
+	local_store.size = size;
 	store.total_indexes += 1;
 	store.indexes[store.total_indexes] = local_store;
 	//check free memory and swap freed memory
@@ -157,13 +158,15 @@ void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
 void	 *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index)
 {
 	void	*ptr;
-	
+	size_t	n_padded;
+
+	n_padded = padding_to_16(n);
 	ptr = current_chunk->map + current_chunk->edge; //bucket 16 bytes sized
-	current_chunk->edge += n;
-	current_chunk->used = current_chunk->used + n;
+	current_chunk->edge += n_padded;
+	current_chunk->used = current_chunk->used + n_padded;
 	current_chunk->total_indexes += 1;
-	current_chunk->available -= n;
-	create_ptr_index(ptr, type, mmap_index, current_chunk->edge - n);
+	current_chunk->available -= n_padded;
+	create_ptr_index(ptr, type, mmap_index, current_chunk->edge - n_padded, n);
 
 	return (ptr);
 }
@@ -173,10 +176,10 @@ void	*create_large_ptr(t_pagezone *current_chunk, size_t store_index, size_t n)
 	void	*ptr;
 	
 	ptr = current_chunk->map;
-	current_chunk->used = n;
+	current_chunk->used = padding_to_16(n);
 	current_chunk->total_indexes += 1;
 	current_chunk->available = 0;
-	create_ptr_index(ptr, LARGE, store_index, 0);
+	create_ptr_index(ptr, LARGE, store_index, 0, n);
 
 	return (ptr);
 }
@@ -224,13 +227,13 @@ void	*find_store_space(size_t n)
 
 void	*ft_malloc(size_t n)
 {
-	size_t	size;
+	// size_t	size;
 
 	if (n < 1)
 		return (NULL);
-	size = padding_to_16(n);
+	// size = padding_to_16(n);
 	malloc_storage_init();
-	return (find_store_space(size));
+	return (find_store_space(n));
 }
 
 char *routine(int n)
@@ -257,21 +260,21 @@ int main(int argc, char **argv)
 	char *str1;
 	int i = 0;
 
-	while (i < 10000)
+	while (i < 10)
 	{
-		str = routine(25);
-		i++;
+		str = routine(i);
+		i += 1;
 	}
 	i = 0;
-	while (i < 1000)
+	while (i < 10)
 	{
-		str = routine(800);
+		str = routine(i * 100);
 		i++;
 	}
 	i = 0;
 	while (i < 10)
 	{
-		str = routine(2050);
+		str = routine(3000 + i);
 		i++;
 	}
 	// routine(120);

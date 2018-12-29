@@ -66,7 +66,6 @@ void    print_address(void  *ptr)
 void    show_alloc_mem(void)
 {
     int tiny_map_iterator = 0;
-    int medium_map_iterator = 0;
     int large_map_iterator = 0;
     int index_iterator = 0;
 	int total_size = 0;

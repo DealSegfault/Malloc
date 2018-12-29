@@ -61,6 +61,7 @@ typedef struct			s_indexes
 	size_t	type;
 	size_t	mmap_index;
 	size_t	index_in_chunk;
+	size_t	size;
 }						t_indexes;
 
 typedef struct			s_pagezone
@@ -81,14 +82,6 @@ typedef struct			s_pagezone
 // 	size_t	total_indexes;
 // }						t_medium;
 
-// typedef struct			s_large
-// {
-// 	void	*map;
-// 	size_t	used;
-// 	size_t	available;
-// 	size_t	total_indexes;
-// }						t_large;
-
 typedef	struct			s_index_storage
 {
 	t_pagezone	*tiny;
@@ -107,5 +100,5 @@ t_index_storage store;
 
 
 void    show_alloc_mem(void);
-
+void    print_address(void  *ptr);
 #endif
