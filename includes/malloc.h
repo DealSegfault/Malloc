@@ -82,14 +82,6 @@ typedef struct			s_pagezone
 // 	size_t	total_indexes;
 // }						t_medium;
 
-// typedef struct			s_large
-// {
-// 	void	*map;
-// 	size_t	used;
-// 	size_t	available;
-// 	size_t	total_indexes;
-// }						t_large;
-
 typedef	struct			s_index_storage
 {
 	t_pagezone	*tiny;
