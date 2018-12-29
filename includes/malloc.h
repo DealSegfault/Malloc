@@ -103,5 +103,9 @@ typedef	struct			s_index_storage
 }						t_index_storage;
 
 // void					*ft_malloc(size_t n);
+t_index_storage store;
+
+
+void    show_alloc_mem(void);
 
 #endif
