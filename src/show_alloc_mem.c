@@ -69,22 +69,45 @@ void    show_alloc_mem(void)
     int medium_map_iterator = 0;
     int large_map_iterator = 0;
     int index_iterator = 0;
+	int total_size = 0;
     t_indexes current_ptr;
 
-
-    printf("Tiny %zu\nMedium %zu\nLarge%zu\n", store.nb_tiny, store.nb_medium, store.nb_large);
-    printf("Total indexes %zu\n", store.total_indexes);
-    while (tiny_map_iterator++ < store.nb_tiny)
+	printf("TINY : %p\n", (void *)store.tiny);
+    while (index_iterator < store.total_indexes)
     {
-       print_address(store.tiny + tiny_map_iterator);
+        current_ptr = store.indexes[index_iterator];
+        // print_address(current_ptr.ptr);
+		if (current_ptr.type == TINY)
+		{
+			printf("%p - %p : %zu octets\n", current_ptr.ptr, current_ptr.ptr + current_ptr.size, current_ptr.size);	
+        	total_size += current_ptr.size;
+		}	
+		// printf("Type: %zu Mmap_index %zu Position %zu, Address %p\n", current_ptr.type, current_ptr.mmap_index, current_ptr.index_in_chunk, (void *)current_ptr.ptr);
+        // printf("%d\n", index_iterator++);
+        index_iterator++;
+    }
+	index_iterator = 0;
+	printf("SMALL : %p\n", (void *)store.medium);
+	while (index_iterator < store.total_indexes)
+    {
+		if (store.indexes[index_iterator].type == MEDIUM)
+		{
+			printf("%p - %p : %zu octets\n", store.indexes[index_iterator].ptr, store.indexes[index_iterator].ptr + store.indexes[index_iterator].size, store.indexes[index_iterator].size);
+        	total_size += current_ptr.size;
+		}
+		index_iterator++;
     }
 
-    // while (index_iterator < store.total_indexes)
-    // {
-    //     current_ptr = store.indexes[index_iterator];
-    //     printf("Type: %zu Mmap_index %zu Position %zu, Address %p\n", current_ptr.type, current_ptr.mmap_index, current_ptr.index_in_chunk, (void *)current_ptr.ptr);
-    //     // printf("%d\n", index_iterator++);
-    //     index_iterator++;
-    // }
-
+	index_iterator = 0;
+	printf("LARGE : %p\n", (void *)store.large);
+	while (++index_iterator < store.total_indexes)
+    {
+		if (store.indexes[index_iterator].type >= LARGE)
+		{
+			printf("%p - %p : %zu octets\n", store.indexes[index_iterator].ptr, store.indexes[index_iterator].ptr + store.indexes[index_iterator].size, store.indexes[index_iterator].size);
+        	total_size += current_ptr.size;
+		}
+        index_iterator++;
+    }
+	printf("Total : %d octets\n", total_size);
 }
