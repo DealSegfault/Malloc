@@ -33,27 +33,7 @@
 # define TINY_ZONE 1024 * 32
 # define MEDIUM_ZONE 1024 * 16
 # define LARGE_ZONE 1024 * 8
-
-
-// typedef struct			s_used_chunk
-// {
-// 	size_t	size_prev_chunk;
-// 	size_t	size_chunk;
-// 	void	*content;
-// 	size_t	size_next_chunk;
-// }						t_used_chunk;
-
-// typedef struct			s_free_chunk
-// {
-// 	int		prev_chunk_allocated;
-// 	size_t	size_chunk;
-// 	void	*next_chunk;
-// 	void	*prev_chunk;
-// 	size_t	ununsed_space;
-
-// 	size_t	size_next_chunk;
-
-// }						t_free_chunk;					
+				
 
 typedef struct			s_indexes
 {
@@ -73,22 +53,6 @@ typedef struct			s_pagezone
 	size_t	edge;
 }						t_pagezone;
 
-// typedef struct			s_medium
-// {
-// 	void	*map;
-// 	size_t	used;
-// 	size_t	available;
-// 	size_t	total_indexes;
-// }						t_medium;
-
-// typedef struct			s_large
-// {
-// 	void	*map;
-// 	size_t	used;
-// 	size_t	available;
-// 	size_t	total_indexes;
-// }						t_large;
-
 typedef	struct			s_index_storage
 {
 	t_pagezone	*tiny;
@@ -103,6 +67,20 @@ typedef	struct			s_index_storage
 }						t_index_storage;
 
 // void					*ft_malloc(size_t n);
+void		malloc_storage_init(void);
+size_t		padding_to_16(size_t n);
+size_t		malloc_type(size_t size);
+void		*mmap_proxy(size_t size);
+void		create_map(size_t type);
+int			find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, int *i);
+void		create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge);
+void		 *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index);
+void		*find_store_space(size_t n);
+void		*ft_malloc(size_t n);
+
+
+// To remove test funcs
+char 		*routine(int n);
 
 #endif
 
