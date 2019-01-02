@@ -41,6 +41,7 @@ typedef struct			s_indexes
 	size_t	type;
 	size_t	mmap_index;
 	size_t	index_in_chunk;
+	size_t	size;
 }						t_indexes;
 
 typedef struct			s_pagezone
@@ -81,6 +82,11 @@ void		*ft_malloc(size_t n);
 
 // To remove test funcs
 char 		*routine(int n);
+
+void    show_alloc_mem(void);
+void    print_address(void  *ptr);
+
+t_index_storage store;
 
 #endif
 

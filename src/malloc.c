@@ -1,7 +1,5 @@
 #include "../includes/malloc.h"
 
-t_index_storage store;
-
 void	create_map(size_t type)
 {
 	t_pagezone *store_type;
