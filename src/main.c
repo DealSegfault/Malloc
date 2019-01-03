@@ -12,7 +12,7 @@
 
 #include "../includes/malloc.h"
 
-char *routine(int n)
+char *routine(int n, char c)
 {
 	char *str;
 	int i = 0;
@@ -21,7 +21,7 @@ char *routine(int n)
 		return (NULL);
 	while (i < n)
 	{
-		str[i] = 'X';
+		str[i] = c;
 		i++;
 	}
 	str[i] = '\0';
@@ -35,31 +35,33 @@ int main(int argc, char **argv)
 	char *str;
 	char *str1;
 	int i = 0;
+    
+    str = routine(10, 'X');
+    ft_free(str);
+    str1 = routine(10, 'a');
+    printf("Old %p Content: %s\n New %p Content %s\n ", str, str, str1, str1);
+    // show_alloc_mem();
 
-	while (i < 10)
-	{
-		str = routine(i);
-		i += 1;
-	}
-	i = 0;
-	while (i < 10)
-	{
-		str = routine(i * 100);
-		i++;
-	}
-	i = 0;
-	while (i < 10)
-	{
-		str = routine(3000 + i);
-		i++;
-	}
-	// routine(120);
-	// routine(1200);
-	// routine(2000);
-	// routine(3000);
-	// routine(4000);
-
-
-	show_alloc_mem();
+    // routine(10);	
+    // show_alloc_mem();
+    // ft_free(str);
+    // while (i < 10)
+	// {
+	// 	str = routine(i);
+	// 	i += 1;
+	// }
+	// i = 0;
+	// while (i < 10)
+	// {
+	// 	str = routine(i * 100);
+	// 	i++;
+	// }
+	// i = 0;
+	// while (i < 10)
+	// {
+	// 	str = routine(3000 + i);
+	// 	i++;
+	// }
+	// show_alloc_mem();
 	return 0;
 }

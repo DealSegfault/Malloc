@@ -59,16 +59,38 @@ void malloc_storage_init(void)
 	create_map(MEDIUM);
 }
 
+
+
+int		is_free_in_map(t_pagezone map, size_t mmap_index, size_t n)
+{
+	size_t	edge;
+	size_t i;
+
+    i = 0;
+    while (i <= store.total_indexes)
+    {   
+        // printf("%p ? %p\n", store.indexes[i].ptr, ptr);
+        if (store.indexes[i].mmap_index == mmap_index &&
+			store.indexes[i].used == 0 && store.indexes[i].size >= n)
+            // store.indexes[i].used = 1;
+			return (i);
+        i++;
+    }
+	return (0); // Might not free first ptr
+}
 int		find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, int *i)
 {
 	int j;
+	int is_free;
 
 	j = *i;
+	is_free = 0;
 	while (j < nb_pagezone)
 	{
 		if (current_type[j].available >= n)
 		{
-			//is_free_in_map ptr allocate first freed indexes with correct size ?
+			if ((is_free = is_free_in_map(current_type[j], j, n)))
+				return (is_free);
 			*i = j;
 			return (1);
 		}
@@ -99,6 +121,7 @@ void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge, si
 	local_store.index_in_chunk = edge;
 	local_store.ptr = ptr;
 	local_store.size = size;
+	local_store.used = 1;
 	store.total_indexes += 1;
 	store.indexes[store.total_indexes] = local_store;
 	//check free memory and swap freed memory
@@ -120,6 +143,13 @@ void	 *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_
 	return (ptr);
 }
 
+void	*reuse_ptr(int i, size_t n)
+{
+	store.indexes[i].size = n;
+	store.indexes[i].used = 1;
+	return (store.indexes[i].ptr);  
+}
+
 void	*find_store_space(size_t n)
 {
 	size_t	type;
@@ -127,11 +157,13 @@ void	*find_store_space(size_t n)
 	size_t	nb_chunk;
 	int		chunk_index;
 	void	*ptr;
+	int		space_found;
+
+	space_found = 0;
 	t_pagezone *page_type;
 
 	chunk_index = 0;
 	type = malloc_type(n);
-	// printf("Type %d, Size %d\n", (int)type, (int)n);
 	if (type == TINY)
 	{
 		page_type = store.tiny;
@@ -148,17 +180,19 @@ void	*find_store_space(size_t n)
 		ptr = create_large_ptr(store.large + store.nb_large, store.nb_large, n);
 		return (ptr);
 	}
-	if (find_available_chunk(page_type, n, nb_chunk, &chunk_index))
+	space_found = find_available_chunk(page_type, n, nb_chunk, &chunk_index);
+	if (space_found == 1) // Create new ptr
 	{
 		ptr = create_ptr(page_type + chunk_index, n, type, chunk_index);
 		return (ptr);
 	}
+	if (space_found > 1) // Reuse old ptr from ptr indexes
+		ptr = reuse_ptr(space_found, n);
 	else // create new pagezone for type
 	{
 		create_map(type);
 		return (find_store_space(n));
 	}
-
 	return (NULL);
 }
 

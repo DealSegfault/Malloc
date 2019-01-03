@@ -42,6 +42,7 @@ typedef struct			s_indexes
 	size_t	mmap_index;
 	size_t	index_in_chunk;
 	size_t	size;
+	int		used;
 }						t_indexes;
 
 typedef struct			s_pagezone
@@ -78,14 +79,14 @@ void		create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge, s
 void		*create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index);
 void		*find_store_space(size_t n);
 void		*ft_malloc(size_t n);
-
+void        ft_free(void *ptr);
 
 // To remove test funcs
-char 		*routine(int n);
+char 		*routine(int n, char c);
 
 void    show_alloc_mem(void);
 void    print_address(void  *ptr);
-
+void	*reuse_ptr(int i, size_t n);
 t_index_storage store;
 
 #endif
