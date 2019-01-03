@@ -74,8 +74,8 @@ size_t		malloc_type(size_t size);
 void		*mmap_proxy(size_t size);
 void		create_map(size_t type);
 int			find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, int *i);
-void		create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge);
-void		 *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index);
+void		create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge, size_t size);
+void		*create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index);
 void		*find_store_space(size_t n);
 void		*ft_malloc(size_t n);
 

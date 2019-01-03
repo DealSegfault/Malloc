@@ -50,7 +50,7 @@ void malloc_storage_init(void)
 	store.tiny = mmap_proxy(TINY_ZONE);
 	store.medium = mmap_proxy(MEDIUM_ZONE);
 	store.large = mmap_proxy(LARGE_ZONE);
-	store.indexes = mmap_proxy(sizeof(t_indexes) * (TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE));
+	store.indexes = mmap_proxy(sizeof(t_indexes) * (TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE) * 100);
 	store.total_indexes = 0;
 	store.nb_tiny = 0;
 	store.nb_medium = 0;
@@ -77,8 +77,20 @@ int		find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, i
 	return (0);
 }
 
+void	*create_large_ptr(t_pagezone *current_chunk, size_t store_index, size_t n)
+{
+	void	*ptr;
+	
+	ptr = current_chunk->map;
+	current_chunk->used = padding_to_16(n);
+	current_chunk->total_indexes += 1;
+	current_chunk->available = 0;
+	create_ptr_index(ptr, LARGE, store_index, 0, n);
 
-void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
+	return (ptr);
+}
+
+void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge, size_t size)
 {
 	t_indexes	local_store;
 
@@ -86,8 +98,8 @@ void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
 	local_store.mmap_index = mmap_index;
 	local_store.index_in_chunk = edge;
 	local_store.ptr = ptr;
+	local_store.size = size;
 	store.total_indexes += 1;
-
 	store.indexes[store.total_indexes] = local_store;
 	//check free memory and swap freed memory
 }
@@ -95,13 +107,15 @@ void	create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge)
 void	 *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index)
 {
 	void	*ptr;
-	
+	size_t	n_padded;
+
+	n_padded = padding_to_16(n);
 	ptr = current_chunk->map + current_chunk->edge; //bucket 16 bytes sized
-	current_chunk->edge += n;
-	current_chunk->used = current_chunk->used + n;
+	current_chunk->edge += n_padded;
+	current_chunk->used = current_chunk->used + n_padded;
 	current_chunk->total_indexes += 1;
-	current_chunk->available -= n;
-	create_ptr_index(ptr, type, mmap_index, current_chunk->edge - n);
+	current_chunk->available -= n_padded;
+	create_ptr_index(ptr, type, mmap_index, current_chunk->edge - n_padded, n);
 
 	return (ptr);
 }
@@ -117,6 +131,7 @@ void	*find_store_space(size_t n)
 
 	chunk_index = 0;
 	type = malloc_type(n);
+	// printf("Type %d, Size %d\n", (int)type, (int)n);
 	if (type == TINY)
 	{
 		page_type = store.tiny;
@@ -126,6 +141,12 @@ void	*find_store_space(size_t n)
 	{
 		page_type = store.medium;
 		nb_chunk = store.nb_medium;
+	}
+	if (type == LARGE)
+	{
+		create_map(n);
+		ptr = create_large_ptr(store.large + store.nb_large, store.nb_large, n);
+		return (ptr);
 	}
 	if (find_available_chunk(page_type, n, nb_chunk, &chunk_index))
 	{
