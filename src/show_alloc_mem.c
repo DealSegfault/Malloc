@@ -61,8 +61,8 @@ void    print_address(void  *ptr)
 {
     write(1, "0x", 2);
     ft_putnbr_base((unsigned long long )ptr, "ABCDEF0123456789");
-    write(1, "\n", 1);
 }
+
 void    show_alloc_mem(void)
 {
     int tiny_map_iterator = 0;
@@ -72,11 +72,11 @@ void    show_alloc_mem(void)
     t_indexes current_ptr;
 
 	printf("TINY : %p\n", (void *)store.tiny);
-    while (index_iterator < store.total_indexes)
+    while (index_iterator <= store.total_indexes)
     {
         current_ptr = store.indexes[index_iterator];
         // print_address(current_ptr.ptr);
-		if (current_ptr.type == TINY)
+		if (current_ptr.type == TINY && store.indexes[index_iterator].used)
 		{
 			printf("%p - %p : %zu octets\n", current_ptr.ptr, current_ptr.ptr + current_ptr.size, current_ptr.size);	
         	total_size += current_ptr.size;
@@ -87,9 +87,9 @@ void    show_alloc_mem(void)
     }
 	index_iterator = 0;
 	printf("SMALL : %p\n", (void *)store.medium);
-	while (index_iterator < store.total_indexes)
+	while (index_iterator <= store.total_indexes)
     {
-		if (store.indexes[index_iterator].type == MEDIUM)
+		if (store.indexes[index_iterator].type == MEDIUM && store.indexes[index_iterator].used)
 		{
 			printf("%p - %p : %zu octets\n", store.indexes[index_iterator].ptr, store.indexes[index_iterator].ptr + store.indexes[index_iterator].size, store.indexes[index_iterator].size);
         	total_size += current_ptr.size;
@@ -99,9 +99,9 @@ void    show_alloc_mem(void)
 
 	index_iterator = 0;
 	printf("LARGE : %p\n", (void *)store.large);
-	while (++index_iterator < store.total_indexes)
+	while (++index_iterator <= store.total_indexes)
     {
-		if (store.indexes[index_iterator].type >= LARGE)
+		if (store.indexes[index_iterator].type >= LARGE && store.indexes[index_iterator].used)
 		{
 			printf("%p - %p : %zu octets\n", store.indexes[index_iterator].ptr, store.indexes[index_iterator].ptr + store.indexes[index_iterator].size, store.indexes[index_iterator].size);
         	total_size += current_ptr.size;
