@@ -1,5 +1,17 @@
 #include "../includes/malloc.h"
 
+void	*ft_memcpy(void *dest, void *src, size_t n)
+{
+	unsigned long	*s;
+	unsigned long	*d;
+
+	d = (unsigned long *)dest;
+	s = (unsigned long *)src;
+	while ((unsigned int)n-- > 0)
+		*d++ = *s++;
+	return ((unsigned long *)dest);
+}
+
 size_t	padding_to_16(size_t n)
 {
 	size_t rmdr;
