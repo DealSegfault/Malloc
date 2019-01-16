@@ -15,9 +15,11 @@ void    *realloc(void *ptr, size_t size)
                 return (newptr);
             else
             {
-                ft_memcpy()
                 ft_free(ptr);
-                ft_malloc(size)
+                newptr = ft_malloc(size);
+                ft_memcpy(newptr, index.ptr, index.size);
+                // store.indexes[store.total_indexes].ptr;
+                return (newptr);
             }
             
         }
