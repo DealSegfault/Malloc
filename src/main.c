@@ -12,11 +12,11 @@
 
 #include "../includes/malloc.h"
 
-char *routine(int n, char c)
+char *routine(int n)
 {
 	char *str;
 	int i = 0;
-
+	char c = 'X';
 	if (!(str = ft_malloc(n + 1)))
 		return (NULL);
 	while (i < n)
@@ -30,21 +30,42 @@ char *routine(int n, char c)
 	return str;
 }
 
+char *routine_realloc(char *src, int n)
+{
+	char *str;
+	int i = 0;
+	char c = 'X';
+	if (!(str = (char *)ft_realloc(src, n + 1)))
+		return (NULL);
+	while (i < n)
+	{
+		str[i] = c;
+		i++;
+	}
+	str[i] = '\0';
+	return str;
+}
+
+
 int main(int argc, char **argv)
 {
 	char *str;
 	char *str1;
 	int i = 0;
-    
-    str = routine(10, 'X');
-    ft_free(str);
-    str1 = routine(10, 'a');
-    printf("Old %p Content: %s\n New %p Content %s\n ", str, str, str1, str1);
-    // show_alloc_mem();
+	
+	str = routine(14);
 
-    // routine(10);	
-    // show_alloc_mem();
-    // ft_free(str);
+	while(i++ < 26001)
+	{
+		str = routine_realloc(str, i);
+	}
+	show_alloc_mem();
+
+    // // str = routine(10, 'X');
+    // // ft_free(str);
+    // // str1 = routine(10, 'a');
+    // // printf("Old %p Content: %s\n New %p Content %s\n ", str, str, str1, str1);
+    // // // show_alloc_mem();
     // while (i < 10)
 	// {
 	// 	str = routine(i);
@@ -62,6 +83,5 @@ int main(int argc, char **argv)
 	// 	str = routine(3000 + i);
 	// 	i++;
 	// }
-	// show_alloc_mem();
 	return 0;
 }

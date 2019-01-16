@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
+# include <string.h>
 
 # define BUCKET(X) X / 16
 # define DEFAULT_MMAP_THRESHOLD_MIN (128 * 1024)
@@ -80,10 +81,11 @@ void		*create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_
 void		*find_store_space(size_t n);
 void		*ft_malloc(size_t n);
 void        ft_free(void *ptr);
+void    	*ft_realloc(void *ptr, size_t size);
 
 // To remove test funcs
-char 		*routine(int n, char c);
-
+char 	*routine(int n);
+void	*ft_memcpy(void *dest, void *src, size_t n);
 void    show_alloc_mem(void);
 void    print_address(void  *ptr);
 void	*reuse_ptr(int i, size_t n);
