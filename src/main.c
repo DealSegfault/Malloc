@@ -51,14 +51,18 @@ int main()//int argc, char **argv
 {
 	char *str;
 	// char *str1;
-	int i = 0;
-	
-	while (i < 100)
-	{
-		str = routine(i);
-		i++;
-	}
-	i = 0;
+	// int i = 0;
+
+
+	str = routine(100);
+	ft_free(str);
+	ft_free(str);	
+	// while (i < 100)
+	// {
+	// 	str = routine(i);
+	// 	i++;
+	// }
+	// i = 0;
 
 	// while(i < 400)
 	// {
