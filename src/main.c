@@ -35,7 +35,7 @@ char *routine_realloc(char *src, int n)
 	char *str;
 	int i = 0;
 	char c = 'X';
-	if (!(str = (char *)ft_realloc(src, n + 1)))
+	if (!(str = ft_realloc(src, n + 1)))
 		return (NULL);
 	while (i < n)
 	{
@@ -47,24 +47,31 @@ char *routine_realloc(char *src, int n)
 }
 
 
-int main(int argc, char **argv)
+int main()//int argc, char **argv
 {
 	char *str;
-	char *str1;
+	// char *str1;
 	int i = 0;
 	
-	str = routine(14);
-
-	while(i++ < 26001)
+	while (i < 100)
 	{
-		str = routine_realloc(str, i);
+		str = routine(i);
+		i++;
 	}
-	show_alloc_mem();
+	i = 0;
+
+	// while(i < 400)
+	// {
+	// 	str = routine_realloc(str, i);
+	// 	// printf("i = %d\nNew Ptr: %p\n\n", i, str);
+	// 	i++;
+	// }
+	// show_alloc_mem();
 
     // // str = routine(10, 'X');
     // // ft_free(str);
     // // str1 = routine(10, 'a');
-    // // printf("Old %p Content: %s\n New %p Content %s\n ", str, str, str1, str1);
+    // printf("Old %p Content: %s\n New %p Content %s\n ", str, str, str1, str1);
     // // // show_alloc_mem();
     // while (i < 10)
 	// {

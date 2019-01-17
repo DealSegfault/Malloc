@@ -65,14 +65,14 @@ void    print_address(void  *ptr)
 
 void    show_alloc_mem(void)
 {
-    int tiny_map_iterator = 0;
-    int large_map_iterator = 0;
+    // int tiny_map_iterator = 0;
+    // int large_map_iterator = 0;
     int index_iterator = 0;
 	int total_size = 0;
     t_indexes current_ptr;
 
 	printf("TINY : %p\n", (void *)store.tiny);
-    while (index_iterator <= store.total_indexes)
+    while (index_iterator <= (int)store.total_indexes)
     {
         current_ptr = store.indexes[index_iterator];
         // print_address(current_ptr.ptr);
@@ -87,7 +87,7 @@ void    show_alloc_mem(void)
     }
 	index_iterator = 0;
 	printf("SMALL : %p\n", (void *)store.medium);
-	while (index_iterator <= store.total_indexes)
+	while (index_iterator <= (int)store.total_indexes)
     {
 		if (store.indexes[index_iterator].type == MEDIUM && store.indexes[index_iterator].used)
 		{
@@ -99,7 +99,7 @@ void    show_alloc_mem(void)
 
 	index_iterator = 0;
 	printf("LARGE : %p\n", (void *)store.large);
-	while (++index_iterator <= store.total_indexes)
+	while (++index_iterator <= (int)store.total_indexes)
     {
 		if (store.indexes[index_iterator].type >= LARGE && store.indexes[index_iterator].used)
 		{

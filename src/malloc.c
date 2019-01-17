@@ -41,8 +41,6 @@ void	create_map(size_t type)
 
 void malloc_storage_init(void)
 {
-	size_t malloc_internal_size;
-
 	// store = (t_index_storage)mmap_proxy(sizeof(t_index_storage));
 	if (store.is_init == 1)
 		return ;
@@ -61,9 +59,9 @@ void malloc_storage_init(void)
 
 
 
-int		is_free_in_map(t_pagezone map, size_t mmap_index, size_t n)
+int		is_free_in_map(size_t mmap_index, size_t n)
 {
-	size_t	edge;
+	// size_t	edge;
 	size_t i;
 
     i = 0;
@@ -87,9 +85,9 @@ int		find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, i
 	is_free = 0;
 	while (j < nb_pagezone)
 	{
-		if (current_type[j].available >= n)
+		if (current_type[j].available >= (int)n)
 		{
-			if ((is_free = is_free_in_map(current_type[j], j, n)))
+			if ((is_free = is_free_in_map(j, n)))
 				return (is_free);
 			*i = j;
 			return (0);
@@ -153,7 +151,7 @@ void	*reuse_ptr(int i, size_t n)
 void	*find_store_space(size_t n)
 {
 	size_t	type;
-	size_t	available_chunk;
+	// size_t	available_chunk;
 	size_t	nb_chunk;
 	int		chunk_index;
 	void	*ptr;
