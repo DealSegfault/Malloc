@@ -17,6 +17,9 @@ void        ft_free(void *ptr)
     size_t i;
     t_indexes index;
     i = 0;
+
+    if (ptr == NULL)
+        return ;
     while (i <= store.total_indexes)
     {   
         // printf("%p ? %p\n", store.indexes[i].ptr, ptr);
