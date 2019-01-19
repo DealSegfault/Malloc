@@ -2,6 +2,10 @@ CC	=	gcc
 
 RM	=	rm -f
 
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
 NAME	=	libft_malloc_$(HOSTTYPE).so
 
 LINK	=	libft_malloc.so
