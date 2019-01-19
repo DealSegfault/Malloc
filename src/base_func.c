@@ -77,3 +77,18 @@ void	ft_putnbr_base(int nbr, char *base)
 			ft_putchar(base[nbr_final[i]]);
 	}
 }
+
+int		is_free_in_map(size_t mmap_index, size_t n)
+{
+	size_t i;
+
+	i = 0;
+	while (i <= g_store.total_indexes)
+	{
+		if (g_store.indexes[i].mmap_index == mmap_index &&
+			g_store.indexes[i].used == 0 && g_store.indexes[i].size >= n)
+			return (i);
+		i++;
+	}
+	return (0);
+}

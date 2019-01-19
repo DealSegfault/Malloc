@@ -1,40 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   realloc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhalit <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/19 16:07:40 by mhalit            #+#    #+#             */
+/*   Updated: 2019/01/19 16:07:42 by mhalit           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/malloc.h"
 
-void    *realloc(void *ptr, size_t size)
+void		*realloc(void *ptr, size_t size)
 {
-    void        *newptr;
-    t_indexes   index;
-    size_t      i;
-    
-    i = 0;
-    newptr = NULL;
-    if (store.total_indexes == 0)
-    {
-        newptr = malloc(size);
-        return (newptr);
-    }
-    while (i <= store.total_indexes)
-    {   
-        if (store.indexes[i].ptr == ptr)
-        {
-            index = store.indexes[i];
-            if (index.size >= size && index.type != LARGE)//Wrng 
-            {
-                return (newptr);
-            }
-            else {
-                free(ptr);
-                if (!(newptr = malloc(size)))
-                    return (NULL);
-                if (index.size > 0 && index.type < 3)
-                    newptr = ft_memcpy(newptr, index.ptr, index.size);
-                // printf("i = %ld %s Size %ld\n", i, "Copy ", index.size);
-                // store.indexes[store.total_indexes].ptr;
-                return (newptr);
-            }
-            
-        }
-        i++;
-    }
-    return (newptr);
+	void		*newptr;
+	size_t		index_iterator;
+
+	index_iterator = -1;
+	newptr = NULL;
+	if (g_store.total_indexes == 0)
+		return (malloc(size));
+	while (++index_iterator <= g_store.total_indexes)
+	{
+		if (CURRENT.ptr == ptr)
+		{
+			if (CURRENT.size >= size && CURRENT.type != LARGE)
+				return (newptr);
+			else
+			{
+				free(ptr);
+				if (!(newptr = malloc(size)))
+					return (NULL);
+				if (CURRENT.size > 0 && CURRENT.type < 3)
+					return (ft_memcpy(newptr, CURRENT.ptr, CURRENT.size));
+			}
+		}
+	}
+	return (newptr);
 }

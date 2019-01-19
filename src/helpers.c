@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helpers.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mhalit <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/19 16:16:04 by mhalit            #+#    #+#             */
+/*   Updated: 2019/01/19 16:16:06 by mhalit           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/malloc.h"
 
-void	*ft_memcpy(void *dest, void *src, size_t n)
+void		*ft_memcpy(void *dest, void *src, size_t n)
 {
 	unsigned long	*s;
 	unsigned long	*d;
@@ -12,7 +24,7 @@ void	*ft_memcpy(void *dest, void *src, size_t n)
 	return ((unsigned long *)dest);
 }
 
-size_t	padding_to_16(size_t n)
+size_t		padding_to_16(size_t n)
 {
 	size_t rmdr;
 	size_t toadd;
@@ -26,10 +38,10 @@ size_t	padding_to_16(size_t n)
 	return (n + toadd);
 }
 
-size_t	malloc_type(size_t size)
+size_t		malloc_type(size_t size)
 {
-	int page_size;
-	size_t padded_size;
+	int		page_size;
+	size_t	padded_size;
 
 	if (size <= 0)
 		return (0);
@@ -39,14 +51,14 @@ size_t	malloc_type(size_t size)
 		return (0);
 	if (padded_size <= TINY_SIZE)
 		return (TINY);
-	if (padded_size > TINY_SIZE &&  padded_size < MEDIUM_SIZE)
+	if (padded_size > TINY_SIZE && padded_size < MEDIUM_SIZE)
 		return (MEDIUM);
 	else
 		return (LARGE);
 	return (0);
 }
 
-void	*mmap_proxy(size_t size)
+void		*mmap_proxy(size_t size)
 {
 	void	*ptr;
 
