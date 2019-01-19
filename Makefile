@@ -17,6 +17,9 @@ SRC	=	src/free.c			\
 		src/helpers.c		\
 		src/realloc.c		\
 		src/show_alloc_mem.c\
+		src/show_helpers.c	\
+		src/base_func.c		\
+		src/create_map.c
 
 OBJ	=	$(SRC:.c=.o)
 
