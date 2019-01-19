@@ -34,6 +34,8 @@
 # define TINY_ZONE 1024 * 32
 # define MEDIUM_ZONE 1024 * 16
 # define LARGE_ZONE 1024 * 8
+# define CURRENT g_store.indexes[index_iterator]
+# define ENDPTR current_ptr.ptr + current_ptr.size
 
 typedef struct			s_indexes
 {
@@ -68,6 +70,10 @@ typedef	struct			s_index_storage
 	int			is_init;
 }						t_index_storage;
 
+void					free(void *ptr);
+void					*malloc(size_t size);
+void					*realloc(void *ptr, size_t size);
+void					show_alloc_mem(void);
 void					malloc_storage_init(void);
 size_t					padding_to_16(size_t n);
 size_t					malloc_type(size_t size);
@@ -80,15 +86,18 @@ void					create_ptr_index(void *ptr, size_t type,
 void					*create_ptr(t_pagezone *current_chunk, size_t n,
 	size_t type, size_t mmap_index);
 void					*find_store_space(size_t n);
-void					*ft_malloc(size_t n);
-void					ft_free(void *ptr);
-void					*ft_realloc(void *ptr, size_t size);
 char					*routine(int n);
 void					*ft_memcpy(void *dest, void *src, size_t n);
-void					show_alloc_mem(void);
 void					print_address(void *ptr);
 void					*reuse_ptr(int i, size_t n);
+void					print_ptr(void *ptr, void *end, size_t size);
+void					print_header(void *ptr, int type);
+void					print_footer(int total_size);
+void					ft_putstr(char *str);
+void					ft_putnbr_base(int nbr, char *base);
+void					ft_putchar(char c);
+void					print_pagetype(size_t type, int *total_size);
 
-t_index_storage			store;
+t_index_storage			g_store;
 
 #endif

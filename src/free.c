@@ -1,9 +1,10 @@
 #include "../includes/malloc.h"
 
 void        double_free_error(void *ptr) {
-    printf("a.out(PID, Address) malloc: *** error for object %p: pointer being freed was not allocated\n\
+    ft_putstr("a.out(PID, Address) malloc: *** error for object %p: pointer being freed was not allocated\n\
 *** set a breakpoint in malloc_error_break to debug\n\
-[1]    7982 abort      ./a.out", ptr);
+[1]    7982 abort      ./a.out");
+    print_address(ptr);
 }
 
 void        increase_pagezone(t_pagezone *current, size_t n)
@@ -12,7 +13,7 @@ void        increase_pagezone(t_pagezone *current, size_t n)
     current->used -= n;
 }
 
-void        ft_free(void *ptr)
+void        free(void *ptr)
 {
     size_t i;
     t_indexes index;
@@ -20,19 +21,19 @@ void        ft_free(void *ptr)
 
     if (ptr == NULL)
         return ;
-    while (i <= store.total_indexes)
+    while (i <= g_store.total_indexes)
     {   
-        // printf("%p ? %p\n", store.indexes[i].ptr, ptr);
-        if (store.indexes[i].ptr == ptr)
+        // printf("%p ? %p\n", g_store.indexes[i].ptr, ptr);
+        if (g_store.indexes[i].ptr == ptr)
         {
-            index = store.indexes[i];
-            if (store.indexes[i].used == 0)
+            index = g_store.indexes[i];
+            if (g_store.indexes[i].used == 0)
                 return double_free_error(ptr);
-            store.indexes[i].used = 0;
+            g_store.indexes[i].used = 0;
             if (index.type == TINY)
-                increase_pagezone(store.tiny + index.mmap_index, index.size);
+                increase_pagezone(g_store.tiny + index.mmap_index, index.size);
             if (index.type == MEDIUM)
-                increase_pagezone(store.medium + index.mmap_index, index.size);
+                increase_pagezone(g_store.medium + index.mmap_index, index.size);
         } 
         i++;
     }

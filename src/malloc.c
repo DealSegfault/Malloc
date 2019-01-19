@@ -42,17 +42,17 @@ void	create_map(size_t type)
 void malloc_storage_init(void)
 {
 	// store = (t_index_storage)mmap_proxy(sizeof(t_index_storage));
-	if (store.is_init == 1)
+	if (g_store.is_init == 1)
 		return ;
-	store.is_init = 1;
-	store.tiny = mmap_proxy(TINY_ZONE);
-	store.medium = mmap_proxy(MEDIUM_ZONE);
-	store.large = mmap_proxy(LARGE_ZONE);
-	store.indexes = mmap_proxy(sizeof(t_indexes) * (TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE) * 100);
-	store.total_indexes = 0;
-	store.nb_tiny = 0;
-	store.nb_medium = 0;
-	store.nb_large = 0;
+	g_store.is_init = 1;
+	g_store.tiny = mmap_proxy(TINY_ZONE);
+	g_store.medium = mmap_proxy(MEDIUM_ZONE);
+	g_store.large = mmap_proxy(LARGE_ZONE);
+	g_store.indexes = mmap_proxy(sizeof(t_indexes) * (TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE) * 100);
+	g_store.total_indexes = 0;
+	g_store.nb_tiny = 0;
+	g_store.nb_medium = 0;
+	g_store.nb_large = 0;
 	create_map(TINY);
 	create_map(MEDIUM);
 }
@@ -61,21 +61,18 @@ void malloc_storage_init(void)
 
 int		is_free_in_map(size_t mmap_index, size_t n)
 {
-	// size_t	edge;
 	size_t i;
-
-    i = 0;
-    while (i <= store.total_indexes)
-    {   
-        // printf("%p ? %p\n", store.indexes[i].ptr, ptr);
-        if (store.indexes[i].mmap_index == mmap_index &&
-			store.indexes[i].used == 0 && store.indexes[i].size >= n)
-            // store.indexes[i].used = 1;
+	i = 0;
+	while (i <= g_store.total_indexes)
+	{
+		if (g_store.indexes[i].mmap_index == mmap_index &&
+			g_store.indexes[i].used == 0 && g_store.indexes[i].size >= n)
 			return (i);
-        i++;
-    }
-	return (0); // Might not free first ptr
+		i++;
+	}
+	return (0);
 }
+
 int		find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, int *i)
 {
 	int j;
@@ -194,13 +191,13 @@ void	*find_store_space(size_t n)
 	return (NULL);
 }
 
-void	*ft_malloc(size_t n)
+void	*malloc(size_t size)
 {
-	size_t	size;
+	size_t	n;
 
-	if (n < 1)
+	if (size < 1)
 		return (NULL);
-	size = padding_to_16(n);
+	n = padding_to_16(size);
 	malloc_storage_init();
-	return (find_store_space(size));
+	return (find_store_space(n));
 }

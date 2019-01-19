@@ -1,6 +1,6 @@
 #include "../includes/malloc.h"
 
-void    *ft_realloc(void *ptr, size_t size)
+void    *realloc(void *ptr, size_t size)
 {
     void        *newptr;
     t_indexes   index;
@@ -10,7 +10,7 @@ void    *ft_realloc(void *ptr, size_t size)
     newptr = NULL;
     if (store.total_indexes == 0)
     {
-        newptr = ft_malloc(size);
+        newptr = malloc(size);
         return (newptr);
     }
     while (i <= store.total_indexes)
@@ -23,8 +23,8 @@ void    *ft_realloc(void *ptr, size_t size)
                 return (newptr);
             }
             else {
-                ft_free(ptr);
-                if (!(newptr = ft_malloc(size)))
+                free(ptr);
+                if (!(newptr = malloc(size)))
                     return (NULL);
                 if (index.size > 0 && index.type < 3)
                     newptr = ft_memcpy(newptr, index.ptr, index.size);
