@@ -30,10 +30,10 @@ size_t		padding_to_16(size_t n)
 	size_t toadd;
 
 	if (n < 1)
-		return(0);
+		return (0);
 	rmdr = n % 16;
 	if (rmdr == 0)
-		return n;
+		return (n);
 	toadd = 16 - rmdr;
 	return (n + toadd);
 }
@@ -66,4 +66,11 @@ void		*mmap_proxy(size_t size)
 	PROT_READ | PROT_WRITE,
 		MAP_ANON | MAP_PRIVATE, -1, 0);
 	return (ptr);
+}
+
+void		*reuse_ptr(int i, size_t n)
+{
+	g_store.indexes[i].size = n;
+	g_store.indexes[i].used = 1;
+	return (g_store.indexes[i].ptr);
 }

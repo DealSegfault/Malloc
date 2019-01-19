@@ -85,6 +85,8 @@ void					create_ptr_index(void *ptr, size_t type,
 	size_t mmap_index, size_t size);
 void					*create_ptr(t_pagezone *current_chunk, size_t n,
 	size_t type, size_t mmap_index);
+void					*create_large_ptr(t_pagezone *current_chunk,
+	size_t store_index, size_t n);
 void					*find_store_space(size_t n);
 char					*routine(int n);
 void					*ft_memcpy(void *dest, void *src, size_t n);

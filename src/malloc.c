@@ -12,45 +12,6 @@
 
 #include "../includes/malloc.h"
 
-void		create_map(size_t type)
-{
-	t_pagezone *store_type;
-	size_t	tail;
-	size_t	size_zone;
-
-	if (type == 0)
-		return ;
-	if (type == TINY)
-	{
-		store_type = g_store.tiny;
-		tail = g_store.nb_tiny;
-		size_zone = TINY_SIZE * 100;
-		g_store.nb_tiny = g_store.nb_tiny + 1;
-	}
-	if (type == MEDIUM)
-	{
-		store_type = g_store.medium;
-		tail = g_store.nb_medium;
-		size_zone = MEDIUM_SIZE * 100;
-		g_store.nb_medium = g_store.nb_medium + 1;
-	}
-	if (type >= LARGE)
-	{
-		store_type = g_store.large;
-		tail = g_store.nb_large;
-		size_zone = type;
-		g_store.nb_large = g_store.nb_large + 1;
-	}
-	if (tail != 0)
-		tail++;
-	store_type[tail].map = mmap_proxy(size_zone);
-	store_type[tail].used = 0;
-	store_type[tail].available = size_zone;
-	store_type[tail].total_indexes = 0;
-	store_type[tail].edge = 0;
-	return ;
-}
-
 void		malloc_storage_init(void)
 {
 	if (g_store.is_init == 1)
@@ -69,7 +30,7 @@ void		malloc_storage_init(void)
 	create_map(MEDIUM);
 }
 
-int		find_available_chunk(t_pagezone *current_type, size_t n,
+int			find_available_chunk(t_pagezone *current_type, size_t n,
 	int nb_pagezone, int *i)
 {
 	int j;
@@ -89,57 +50,6 @@ int		find_available_chunk(t_pagezone *current_type, size_t n,
 		j = j + 1;
 	}
 	return (-1);
-}
-
-void		*create_large_ptr(t_pagezone *current_chunk,
-	size_t store_index, size_t n)
-{
-	void	*ptr;
-
-	ptr = current_chunk->map;
-	current_chunk->used = padding_to_16(n);
-	current_chunk->total_indexes += 1;
-	current_chunk->available = 0;
-	create_ptr_index(ptr, LARGE, store_index, n);
-
-	return (ptr);
-}
-
-void		create_ptr_index(void *ptr, size_t type,
-	size_t mmap_index, size_t size)
-{
-	t_indexes	local_store;
-
-	local_store.type = type;
-	local_store.mmap_index = mmap_index;
-	local_store.ptr = ptr;
-	local_store.size = size;
-	local_store.used = 1;
-	g_store.total_indexes += 1;
-	g_store.indexes[g_store.total_indexes] = local_store;
-}
-
-void		*create_ptr(t_pagezone *current_chunk, size_t n,
-	size_t type, size_t mmap_index)
-{
-	void	*ptr;
-	size_t	n_padded;
-
-	n_padded = padding_to_16(n);
-	ptr = current_chunk->map + current_chunk->edge;
-	current_chunk->edge += n_padded;
-	current_chunk->used = current_chunk->used + n_padded;
-	current_chunk->total_indexes += 1;
-	current_chunk->available -= n_padded;
-	create_ptr_index(ptr, type, mmap_index, n);
-	return (ptr);
-}
-
-void		*reuse_ptr(int i, size_t n)
-{
-	g_store.indexes[i].size = n;
-	g_store.indexes[i].used = 1;
-	return (g_store.indexes[i].ptr);
 }
 
 void		*check_current(t_pagezone **page_type, size_t *n,
@@ -164,7 +74,7 @@ void		*check_current(t_pagezone **page_type, size_t *n,
 	return (NULL);
 }
 
-void	*find_store_space(size_t n)
+void		*find_store_space(size_t n)
 {
 	t_pagezone	*page_type;
 	size_t		type;
@@ -190,7 +100,7 @@ void	*find_store_space(size_t n)
 	return (check_current(&page_type, &n, &nb_chunk));
 }
 
-void	*malloc(size_t size)
+void		*malloc(size_t size)
 {
 	size_t	n;
 
