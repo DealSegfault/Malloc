@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef MALLOC_H
-# define RT_H
+# define MALLOC_H
 
 # include <sys/mman.h>
 # include <stdlib.h>
@@ -34,7 +34,6 @@
 # define TINY_ZONE 1024 * 32
 # define MEDIUM_ZONE 1024 * 16
 # define LARGE_ZONE 1024 * 8
-				
 
 typedef struct			s_indexes
 {
@@ -69,32 +68,27 @@ typedef	struct			s_index_storage
 	int			is_init;
 }						t_index_storage;
 
-// void					*ft_malloc(size_t n);
-void		malloc_storage_init(void);
-size_t		padding_to_16(size_t n);
-size_t		malloc_type(size_t size);
-void		*mmap_proxy(size_t size);
-void		create_map(size_t type);
-int			find_available_chunk(t_pagezone *current_type, size_t n, int nb_pagezone, int *i);
-void		create_ptr_index(void *ptr, size_t type, size_t mmap_index, size_t edge, size_t size);
-void		*create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index);
-void		*find_store_space(size_t n);
-void		*ft_malloc(size_t n);
-void        ft_free(void *ptr);
-void    	*ft_realloc(void *ptr, size_t size);
+void					malloc_storage_init(void);
+size_t					padding_to_16(size_t n);
+size_t					malloc_type(size_t size);
+void					*mmap_proxy(size_t size);
+void					create_map(size_t type);
+int						find_available_chunk(t_pagezone *current_type,
+	size_t n, int nb_pagezone, int *i);
+void					create_ptr_index(void *ptr, size_t type,
+	size_t mmap_index, size_t edge, size_t size);
+void					*create_ptr(t_pagezone *current_chunk, size_t n,
+	size_t type, size_t mmap_index);
+void					*find_store_space(size_t n);
+void					*ft_malloc(size_t n);
+void					ft_free(void *ptr);
+void					*ft_realloc(void *ptr, size_t size);
+char					*routine(int n);
+void					*ft_memcpy(void *dest, void *src, size_t n);
+void					show_alloc_mem(void);
+void					print_address(void *ptr);
+void					*reuse_ptr(int i, size_t n);
 
-// To remove test funcs
-char 	*routine(int n);
-void	*ft_memcpy(void *dest, void *src, size_t n);
-void    show_alloc_mem(void);
-void    print_address(void  *ptr);
-void	*reuse_ptr(int i, size_t n);
-t_index_storage store;
+t_index_storage			store;
 
 #endif
-
-
-
-
-
-
