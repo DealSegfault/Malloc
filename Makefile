@@ -1,37 +1,31 @@
-NAME = malloc
+CC	=	gcc
 
-SRC = malloc.c
+RM	=	rm -f
 
-SRCDIR = ./src/
-INCDIR = ./includes/
-OBJDIR = ./obj/
+NAME	=	libft_malloc_$(HOSTTYPE).so
 
-OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
+LINK	=	libft_malloc.so
 
-CC		= gcc
-CFLAGS	= -Wall -Wextra -Werror -g -Wpadded
+CFLAGS	=	-Wall -Wextra -Werror -fPIC
 
-ifeq ($(HOSTTYPE),)
-	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
-endif
+SRC	=	src/free.c			\
+		src/malloc.c 		\
+		src/helpers.c		\
+		src/realloc.c		\
+		src/show_alloc_mem.c\
 
-all: obj $(NAME)
+OBJ	=	$(SRC:.c=.o)
 
+$(NAME)	:	$(OBJ)
+		$(CC) $(CFLAGS) $(OBJ) -shared -o $(NAME)
+		ln -sf $(NAME) $(LINK)
 
-obj:
-	mkdir -p $(OBJDIR)
+all	:	$(NAME)
 
-$(OBJDIR)%.o:$(SRCDIR)%.c
-	$(CC) $(CFLAGS) -I $(INCDIR) -o $@ -c $<
+clean	:
+		$(RM) $(OBJ)
 
-$(NAME): $(OBJ)
-	$(CC) $(OBJ) -o $(NAME)
+fclean	:	clean
+		$(RM) $(NAME)
 
-clean:
-	rm -rf $(OBJDIR)
-
-fclean: clean
-	rm -rf $(NAME)
-
-re: fclean all
-
+re	:	fclean all
