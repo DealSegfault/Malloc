@@ -79,7 +79,9 @@ void		*find_store_space(size_t n)
 	t_pagezone	*page_type;
 	size_t		type;
 	size_t		nb_chunk;
+	void		*ptr;
 
+	ptr = NULL;
 	type = malloc_type(n);
 	if (type == TINY)
 	{
@@ -94,13 +96,14 @@ void		*find_store_space(size_t n)
 	if (type == LARGE)
 	{
 		create_map(n);
-		return (create_large_ptr(g_store.large + g_store.nb_large,
-			g_store.nb_large, n));
+		ptr = create_large_ptr(g_store.large + g_store.nb_large,
+			g_store.nb_large, n);
+		return (ptr);
 	}
 	return (check_current(&page_type, &n, &nb_chunk));
 }
 
-void		*malloc(size_t size)
+void		*ft_malloc(size_t size)
 {
 	size_t	n;
 
