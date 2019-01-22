@@ -21,6 +21,7 @@ void		*create_large_ptr(t_pagezone *current_chunk,
 	current_chunk->used = padding_to_16(n);
 	current_chunk->total_indexes += 1;
 	current_chunk->available = 0;
+	// g_store.nb_large += 1;
 	create_ptr_index(ptr, LARGE, store_index, n);
 	return (ptr);
 }
@@ -79,7 +80,6 @@ void		select_map(size_t type, t_pagezone **store_type,
 		*store_type = g_store.large;
 		*tail = g_store.nb_large;
 		*size_zone = type;
-		g_store.nb_large = g_store.nb_large + 1;
 	}
 }
 
@@ -90,12 +90,18 @@ void		create_map(size_t type)
 	size_t			size_zone;
 
 	select_map(type, &store_type, &tail, &size_zone);
-	if (tail != 0)
-		tail++;
 	store_type[tail].map = mmap_proxy(size_zone);
 	store_type[tail].used = 0;
 	store_type[tail].available = size_zone;
 	store_type[tail].total_indexes = 0;
 	store_type[tail].edge = 0;
+	if (tail != 0)
+		tail++;
+	// if (type == TINY)
+	// 	g_store.tiny[tail] = store_type;
+	// if (type == MEDIUM)
+	// 	g_store.medium[tail] = store_type;
+	// if (type >= LARGE)
+	// 	g_store.large[tail] = store_type;
 	return ;
 }
