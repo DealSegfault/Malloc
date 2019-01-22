@@ -51,7 +51,7 @@ size_t		malloc_type(size_t size)
 		return (0);
 	if (padded_size <= TINY_SIZE)
 		return (TINY);
-	if (padded_size > TINY_SIZE && padded_size < page_size)
+	if (padded_size > TINY_SIZE && padded_size < (size_t)page_size)
 		return (MEDIUM);
 	else
 		return (LARGE);
