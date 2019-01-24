@@ -28,12 +28,12 @@ void		*realloc(void *ptr, size_t size)
 			if (CURRENT.size >= size && CURRENT.type != LARGE)
 				return (newptr);
 			else
-			{
+			{	
 				free(ptr);
 				if (!(newptr = malloc(size)))
 					return (NULL);
-				if (CURRENT.size > 0 && CURRENT.type < 3)
-					return (ft_memcpy(newptr, CURRENT.ptr, CURRENT.size));
+				newptr = ft_memcpy(newptr, CURRENT.ptr, CURRENT.size);
+				return (newptr);
 			}
 		}
 	}
