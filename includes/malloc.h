@@ -89,7 +89,7 @@ void					*create_large_ptr(t_pagezone *current_chunk,
 	size_t store_index, size_t n);
 void					*find_store_space(size_t n);
 char					*routine(int n);
-void					*ft_memcpy(void *dest, void *src, size_t n);
+void					*ft_memcpy(void *s1, const void *s2, size_t n);
 void					print_address(void *ptr);
 void					*reuse_ptr(int i, size_t n);
 void					print_ptr(void *ptr, void *end, size_t size);
@@ -99,7 +99,7 @@ void					ft_putstr(char *str);
 void					ft_putnbr_base(int nbr, char *base);
 void					ft_putchar(char c);
 void					print_pagetype(size_t type, int *total_size);
-void					*check_current(t_pagezone **page_type, size_t *n,
+void					*check_current(t_pagezone *page_type, size_t n,
 	size_t *nb_chunk);
 int						is_free_in_map(size_t mmap_index, size_t n);
 

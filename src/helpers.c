@@ -12,16 +12,19 @@
 
 #include "../includes/malloc.h"
 
-void		*ft_memcpy(void *dest, void *src, size_t n)
+void	*ft_memcpy(void *s1, const void *s2, size_t n)
 {
-	unsigned long	*s;
-	unsigned long	*d;
+	char	*c1;
+	char	*c2;
 
-	d = (unsigned long *)dest;
-	s = (unsigned long *)src;
-	while ((unsigned int)n-- > 0)
-		*d++ = *s++;
-	return ((unsigned long *)dest);
+	if (n == 0 || s1 == s2)
+		return (s1);
+	c1 = (char *)s1;
+	c2 = (char *)s2;
+	while (--n)
+		*c1++ = *c2++;
+	*c1 = *c2;
+	return (s1);
 }
 
 size_t		padding_to_16(size_t n)
