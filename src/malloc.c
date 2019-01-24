@@ -110,8 +110,6 @@ void		*malloc(size_t size)
 	if (size < 1)
 		return (NULL);
 	n = padding_to_16(size);
-	// ft_putnbr_base((int)size, "0123456789");
-	// ft_putstr("\n");
 	malloc_storage_init();
 	return (find_store_space(n));
 }
