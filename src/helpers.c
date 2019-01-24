@@ -12,7 +12,7 @@
 
 #include "../includes/malloc.h"
 
-void	*ft_memcpy(void *s1, const void *s2, size_t n)
+void		*ft_memcpy(void *s1, const void *s2, size_t n)
 {
 	char	*c1;
 	char	*c2;

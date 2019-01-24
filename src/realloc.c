@@ -28,7 +28,7 @@ void		*realloc(void *ptr, size_t size)
 			if (CURRENT.size >= size && CURRENT.type != LARGE)
 				return (newptr);
 			else
-			{	
+			{
 				free(ptr);
 				if (!(newptr = malloc(size)))
 					return (NULL);
