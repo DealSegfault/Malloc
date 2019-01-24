@@ -52,7 +52,7 @@ int			find_available_chunk(t_pagezone *current_type, size_t n,
 	return (-1);
 }
 
-void		*check_current(t_pagezone **page_type, size_t *n,
+void		*check_current(t_pagezone *page_type, size_t n,
 	size_t *nb_chunk)
 {
 	int			space_found;
@@ -60,16 +60,16 @@ void		*check_current(t_pagezone **page_type, size_t *n,
 	int			chunk_index;
 
 	chunk_index = 0;
-	type = malloc_type(*n);
-	space_found = find_available_chunk(*page_type, *n, *nb_chunk, &chunk_index);
+	type = malloc_type(n);
+	space_found = find_available_chunk(page_type, n, *nb_chunk, &chunk_index);
 	if (space_found == 0)
-		return (create_ptr(*page_type + chunk_index, *n, type, chunk_index));
+		return (create_ptr(page_type + chunk_index, n, type, chunk_index));
 	if (space_found >= 1)
-		return (reuse_ptr(space_found, *n));
+		return (reuse_ptr(space_found, n));
 	else
 	{
 		create_map(type);
-		return (find_store_space(*n));
+		return (find_store_space(n));
 	}
 	return (NULL);
 }
@@ -100,16 +100,18 @@ void		*find_store_space(size_t n)
 			g_store.nb_large, n);
 		return (ptr);
 	}
-	return (check_current(&page_type, &n, &nb_chunk));
+	return (check_current(page_type, n, &nb_chunk));
 }
 
-void		*ft_malloc(size_t size)
+void		*malloc(size_t size)
 {
 	size_t	n;
 
 	if (size < 1)
 		return (NULL);
 	n = padding_to_16(size);
+	// ft_putnbr_base((int)size, "0123456789");
+	// ft_putstr("\n");
 	malloc_storage_init();
 	return (find_store_space(n));
 }
