@@ -12,51 +12,59 @@
 
 #include "../includes/malloc.h"
 
-void		double_free_error(void *ptr)
+void	unmap(t_pagezone *current)
 {
-	ft_putstr("Double free at : ");
-	print_address(ptr);
-	return ;
+	munmap(current->map, current->mapping_size);
+	current->map = NULL;
 }
 
-void		unmap(t_pagezone *current)
-{
-	munmap(current->map, current->available);
-}
-
-void		increase_pagezone(t_pagezone *current, size_t n)
+void	increase_pagezone(t_pagezone *current, size_t n)
 {
 	current->available += n;
 	current->used -= n;
-	if (current->type == TINY && current->used == 0 && g_store.nb_tiny > 1)
+	if (current->used == 0)
+	{
 		unmap(current);
-	if (current->type == MEDIUM && current->used == 0 && g_store.nb_medium > 1)
-		unmap(current);
-	if (current->type == LARGE && current->used == 0 && g_store.nb_large > 1)
-		unmap(current);
+		remove_pagezone(current);
+	}
 }
 
-void		free(void *ptr)
+int	find_pointer_index(void *ptr)
 {
-	size_t		i;
-	t_indexes	index;
+	size_t	i;
 
-	i = -1;
-	if (ptr == NULL)
-		return ;
-	while (++i <= g_store.total_indexes)
+	i = 0;
+	while (i < g_store.total_indexes)
 	{
 		if (g_store.indexes[i].ptr == ptr)
-		{
-			index = g_store.indexes[i];
-			if (g_store.indexes[i].used == 0)
-				return (double_free_error(ptr));
-			g_store.indexes[i].used = 0;
-			if (index.type == TINY)
-				increase_pagezone(g_store.tiny + index.mmap_index, index.size);
-			if (index.type == MEDIUM)
-				increase_pagezone(g_store.medium + index.mmap_index,
-				index.size);
-		}
+			return ((int)i);
+		i++;
 	}
+	return (-1);
+}
+
+void	free(void *ptr)
+{
+	int			index;
+	t_indexes	*idx;
+	t_pagezone	*pagezone;
+
+	if (ptr == NULL)
+		return ;
+	index = find_pointer_index(ptr);
+	if (index == -1)
+	{
+		invalid_free_error(ptr);
+		return ;
+	}
+	idx = &g_store.indexes[index];
+	if (idx->used == 0)
+	{
+		double_free_error(ptr);
+		return ;
+	}
+	idx->used = 0;
+	pagezone = get_pagezone_by_type_and_index(idx->type, idx->mmap_index);
+	if (pagezone != NULL)
+		increase_pagezone(pagezone, idx->size);
 }

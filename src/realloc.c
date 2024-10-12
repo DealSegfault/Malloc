@@ -9,33 +9,31 @@
 /*   Updated: 2019/01/19 16:07:42 by mhalit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../includes/malloc.h"
 
-void		*realloc(void *ptr, size_t size)
+void	*realloc(void *ptr, size_t size)
 {
-	void		*newptr;
-	size_t		index_iterator;
+	int		index;
+	void	*newptr;
 
-	index_iterator = -1;
-	newptr = NULL;
-	if (g_store.total_indexes == 0)
+	if (ptr == NULL)
 		return (malloc(size));
-	while (++index_iterator <= g_store.total_indexes)
+	if (size == 0)
 	{
-		if (CURRENT.ptr == ptr)
-		{
-			if (CURRENT.size >= size && CURRENT.type != LARGE)
-				return (newptr);
-			else
-			{
-				free(ptr);
-				if (!(newptr = malloc(size)))
-					return (NULL);
-				newptr = ft_memcpy(newptr, CURRENT.ptr, CURRENT.size);
-				return (newptr);
-			}
-		}
+		free(ptr);
+		return (NULL);
 	}
+	malloc_storage_init();
+	index = find_pointer_index(ptr);
+	if (index == -1)
+		return (NULL);
+	if (g_store.indexes[index].size >= size &&
+		g_store.indexes[index].type != LARGE)
+		return (ptr);
+	newptr = malloc(size);
+	if (!newptr)
+		return (NULL);
+	ft_memcpy(newptr, ptr, g_store.indexes[index].size);
+	free(ptr);
 	return (newptr);
 }

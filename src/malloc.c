@@ -17,17 +17,17 @@ void		malloc_storage_init(void)
 	if (g_store.is_init == 1)
 		return ;
 	g_store.is_init = 1;
-	g_store.tiny = mmap_proxy(TINY_ZONE);
-	g_store.medium = mmap_proxy(MEDIUM_ZONE);
-	g_store.large = mmap_proxy(LARGE_ZONE);
+	g_store.tiny = mmap_proxy(sizeof(t_pagezone) * MAX_CHUNKS);
+	g_store.medium = mmap_proxy(sizeof(t_pagezone) * MAX_CHUNKS);
+	g_store.large = mmap_proxy(sizeof(t_pagezone) * MAX_CHUNKS);
 	g_store.indexes = mmap_proxy(sizeof(t_indexes) *
 		(TINY_ZONE + MEDIUM_ZONE + LARGE_ZONE) * 100);
 	g_store.total_indexes = 0;
 	g_store.nb_tiny = 0;
 	g_store.nb_medium = 0;
 	g_store.nb_large = 0;
-	create_map(TINY);
-	create_map(MEDIUM);
+	create_map(TINY, 0);
+	create_map(MEDIUM, 0);
 }
 
 int			find_available_chunk(t_pagezone *current_type, size_t n,
@@ -68,7 +68,7 @@ void		*check_current(t_pagezone *page_type, size_t n,
 		return (reuse_ptr(space_found, n));
 	else
 	{
-		create_map(type);
+		create_map(type, 0);
 		return (find_store_space(n));
 	}
 	return (NULL);
@@ -95,9 +95,9 @@ void		*find_store_space(size_t n)
 	}
 	if (type == LARGE)
 	{
-		create_map(n);
-		ptr = create_large_ptr(g_store.large + g_store.nb_large,
-			g_store.nb_large, n);
+		create_map(LARGE, n);
+		ptr = create_large_ptr(g_store.large + g_store.nb_large - 1,
+			g_store.nb_large - 1, n);
 		return (ptr);
 	}
 	return (check_current(page_type, n, &nb_chunk));
@@ -106,7 +106,7 @@ void		*find_store_space(size_t n)
 void		*malloc(size_t size)
 {
 	size_t	n;
-
+	
 	if (size < 1)
 		return (NULL);
 	n = padding_to_16(size);

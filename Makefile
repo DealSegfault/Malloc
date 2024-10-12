@@ -13,6 +13,7 @@ LINK	=	libft_malloc.so
 CFLAGS	=	-Wall -Wextra -Werror -fPIC
 
 SRC	=	src/free.c			\
+		src/free_utils.c    \
 		src/malloc.c 		\
 		src/helpers.c		\
 		src/realloc.c		\

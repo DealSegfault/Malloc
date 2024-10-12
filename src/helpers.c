@@ -41,35 +41,28 @@ size_t		padding_to_16(size_t n)
 	return (n + toadd);
 }
 
-size_t		malloc_type(size_t size)
+size_t malloc_type(size_t size)
 {
-	int		page_size;
-	size_t	padded_size;
+    size_t padded_size = padding_to_16(size);
 
-	if (size <= 0)
-		return (0);
-	padded_size = padding_to_16(size);
-	page_size = getpagesize();
-	if (padded_size < 1)
-		return (0);
-	if (padded_size <= TINY_SIZE)
-		return (TINY);
-	if (padded_size > TINY_SIZE && padded_size < (size_t)page_size)
-		return (MEDIUM);
-	else
-		return (LARGE);
-	return (0);
+    if (padded_size <= TINY_SIZE)
+        return TINY;
+    else if (padded_size <= MEDIUM_SIZE)
+        return MEDIUM;
+    else
+        return LARGE;
 }
 
-void		*mmap_proxy(size_t size)
+void *mmap_proxy(size_t size)
 {
-	void	*ptr;
+    void *ptr;
 
-	ptr = mmap(0, size,
-	PROT_READ | PROT_WRITE,
-		MAP_ANON | MAP_PRIVATE, -1, 0);
-	return (ptr);
+    ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+    if (ptr == MAP_FAILED)
+        return NULL;
+    return ptr;
 }
+
 
 void		*reuse_ptr(int i, size_t n)
 {
