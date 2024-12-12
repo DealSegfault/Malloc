@@ -53,16 +53,10 @@ void	free(void *ptr)
 		return ;
 	index = find_pointer_index(ptr);
 	if (index == -1)
-	{
-		invalid_free_error(ptr);
 		return ;
-	}
 	idx = &g_store.indexes[index];
 	if (idx->used == 0)
-	{
-		double_free_error(ptr);
 		return ;
-	}
 	idx->used = 0;
 	pagezone = get_pagezone_by_type_and_index(idx->type, idx->mmap_index);
 	if (pagezone != NULL)

@@ -12,6 +12,8 @@
 
 #include "../includes/malloc.h"
 
+t_index_storage g_store;
+
 void		malloc_storage_init(void)
 {
 	if (g_store.is_init == 1)
@@ -30,7 +32,7 @@ void		malloc_storage_init(void)
 	create_map(MEDIUM, 0);
 }
 
-int			find_available_chunk(t_pagezone *current_type, size_t n,
+static int			find_available_chunk(t_pagezone *current_type, size_t n,
 	int nb_pagezone, int *i)
 {
 	int j;
@@ -42,7 +44,8 @@ int			find_available_chunk(t_pagezone *current_type, size_t n,
 	{
 		if (current_type[j].available >= (int)n)
 		{
-			if ((is_free = is_free_in_map(j, n)))
+			is_free = is_free_in_map(j, n);
+			if (is_free >= 0)
 				return (is_free);
 			*i = j;
 			return (0);
@@ -52,7 +55,7 @@ int			find_available_chunk(t_pagezone *current_type, size_t n,
 	return (-1);
 }
 
-void		*check_current(t_pagezone *page_type, size_t n,
+static void		*check_current(t_pagezone *page_type, size_t n,
 	size_t *nb_chunk)
 {
 	int			space_found;

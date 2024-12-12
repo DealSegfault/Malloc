@@ -32,20 +32,6 @@ t_pagezone	*get_pagezone_by_type_and_index(size_t type, size_t index)
 	return (NULL);
 }
 
-void	invalid_free_error(void *ptr)
-{
-	ft_putstr("Invalid free at : ");
-	print_address(ptr);
-	ft_putchar('\n');
-}
-
-void	double_free_error(void *ptr)
-{
-	ft_putstr("Double free at : ");
-	print_address(ptr);
-	ft_putchar('\n');
-}
-
 void	update_indexes_after_removal(size_t type, size_t removed_index,
 		size_t nb_pagezones)
 {

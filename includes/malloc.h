@@ -78,8 +78,6 @@ int						find_pointer_index(void *ptr);
 void					increase_pagezone(t_pagezone *current, size_t n);
 void					unmap(t_pagezone *current);
 t_pagezone				*get_pagezone_by_type_and_index(size_t type, size_t index);
-void					invalid_free_error(void *ptr);
-void					double_free_error(void *ptr);
 void					update_indexes_after_removal(size_t type,
 	size_t removed_index, size_t nb_pagezones);
 void					remove_pagezone(t_pagezone *pagezone);
@@ -92,8 +90,6 @@ size_t					padding_to_16(size_t n);
 size_t					malloc_type(size_t size);
 void					*mmap_proxy(size_t size);
 void					create_map(size_t type, size_t size);
-int						find_available_chunk(t_pagezone *current_type,
-	size_t n, int nb_pagezone, int *i);
 void					create_ptr_index(void *ptr, size_t type,
 	size_t mmap_index, size_t size);
 void					*create_ptr(t_pagezone *current_chunk, size_t n,
@@ -112,9 +108,7 @@ void					ft_putstr(char *str);
 void					ft_putnbr_base(int nbr, char *base);
 void					ft_putchar(char c);
 void					print_pagetype(size_t type, int *total_size);
-void					*check_current(t_pagezone *page_type, size_t n,
-	size_t *nb_chunk);
 int						is_free_in_map(size_t mmap_index, size_t n);
-t_index_storage			g_store;
+extern t_index_storage			g_store;
 
 #endif

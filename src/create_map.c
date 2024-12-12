@@ -35,8 +35,8 @@ void		create_ptr_index(void *ptr, size_t type,
 	local_store.ptr = ptr;
 	local_store.size = size;
 	local_store.used = 1;
-	g_store.total_indexes += 1;
 	g_store.indexes[g_store.total_indexes] = local_store;
+	g_store.total_indexes++;
 }
 
 void *create_ptr(t_pagezone *current_chunk, size_t n, size_t type, size_t mmap_index)
@@ -91,8 +91,6 @@ void create_map(size_t type, size_t size)
     size_t      size_zone;
 
     select_map(type, &store_type, &tail, &size_zone, size);
-    if (tail != 0)
-        tail++;
     store_type[tail].map = mmap_proxy(size_zone);
     store_type[tail].used = 0;
     store_type[tail].available = size_zone;

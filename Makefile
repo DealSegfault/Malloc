@@ -34,6 +34,6 @@ clean	:
 		$(RM) $(OBJ)
 
 fclean	:	clean
-		$(RM) $(NAME)
+		$(RM) $(NAME) $(LINK)
 
 re	:	fclean all
